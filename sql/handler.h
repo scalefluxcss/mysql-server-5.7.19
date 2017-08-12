@@ -496,7 +496,7 @@ given at all. */
 */
 #define HA_CREATE_USED_TABLESPACE       (1L << 25)
 
-/** COMPRESSION="zlib|lz4|none" used during table create. */
+/** COMPRESSION="csszlib|zlib|lz4|none" used during table create. */
 #define HA_CREATE_USED_COMPRESS         (1L << 26)
 
 /*

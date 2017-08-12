@@ -192,7 +192,10 @@ struct Compression {
 		ZLIB = 1,
 
 		/** Use LZ4 faster variant, usually lower compression. */
-		LZ4 = 2
+		LZ4 = 2,
+		
+		/** Use CSSZLIB */
+		CSSZLIB = 3
 	};
 
 	/** Compressed page meta-data */

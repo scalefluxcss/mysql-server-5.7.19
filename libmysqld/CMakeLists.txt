@@ -32,6 +32,7 @@ INCLUDE_DIRECTORIES(
   ${SSL_INTERNAL_INCLUDE_DIRS}
   ${CMAKE_SOURCE_DIR}/sql/backup
   ${LZ4_INCLUDE_DIR}
+  ${CSSZLIB_DIR}
 )
 
 # We should generate these separately for libmysqld to avoid
@@ -243,7 +244,6 @@ ELSE()
   SET(MYSQLSERVER_OUTPUT_NAME mysqld)
 ENDIF()
 
-
 SET(LIBS 
   dbug strings regex mysys mysys_ssl vio
   ${ZLIB_LIBRARY} ${SSL_LIBRARIES}
@@ -263,7 +263,6 @@ FOREACH(LIB ${LIBS})
     LIST(APPEND EMBEDDED_LIBS ${LIB})
   ENDIF()
 ENDFOREACH()
-
 MERGE_LIBRARIES(mysqlserver STATIC ${EMBEDDED_LIBS} 
   OUTPUT_NAME ${MYSQLSERVER_OUTPUT_NAME} COMPONENT Embedded)
 

@@ -72,6 +72,7 @@ Created 10/21/1995 Heikki Tuuri
 
 #include <lz4.h>
 #include <zlib.h>
+#include "csszlib_comp.h"
 
 #ifdef UNIV_DEBUG
 /** Set when InnoDB has invoked exit(). */
@@ -1370,6 +1371,27 @@ os_file_compress_page(
 			src + FIL_PAGE_DATA,
 			static_cast<uLong>(content_len),
 			static_cast<int>(compression_level)) != Z_OK) {
+
+			*dst_len = src_len;
+
+			return(src);
+		}
+
+		len = static_cast<ulint>(zlen);
+
+		break;
+	}
+
+	case Compression::CSSZLIB: {
+
+		uLongf	zlen = static_cast<uLongf>(out_len);
+
+		if (csszlib_compress2(
+			dst + FIL_PAGE_DATA,
+			&zlen,
+			src + FIL_PAGE_DATA,
+			static_cast<uLong>(content_len),
+			static_cast<int>(compression_level)) != CSSZ_OK) {
 
 			*dst_len = src_len;
 
@@ -8439,6 +8461,7 @@ os_file_set_umask(ulint umask)
 
 #include <lz4.h>
 #include <zlib.h>
+#include "csszlib_comp.h"
 
 #include <my_aes.h>
 #include <my_rnd.h>
@@ -8478,6 +8501,8 @@ Compression::to_string(Type type)
                 return("None");
         case ZLIB:
                 return("Zlib");
+        case CSSZLIB:
+                return("CSSZlib");
         case LZ4:
                 return("LZ4");
         }
@@ -8654,6 +8679,25 @@ Compression::deserialize(
 		}
 
 		break;
+
+	case CSSZLIB: {
+
+		uLongf	zlen = header.m_original_size;
+
+		if (csszlib_uncompress(dst, &zlen, ptr, header.m_compressed_size)
+		    != CSSZ_OK) {
+
+			if (block != NULL) {
+				os_free_block(block);
+			}
+
+			return(DB_IO_DECOMPRESS_FAIL);
+		}
+
+		len = static_cast<ulint>(zlen);
+
+		break;
+	}
 
 	default:
 #if !defined(UNIV_INNOCHECKSUM)

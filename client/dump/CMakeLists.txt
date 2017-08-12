@@ -141,7 +141,7 @@ SET(MYSQLPUMP_LIB_SOURCES
   ../../sql-common/my_user.c)
 ADD_CONVENIENCE_LIBRARY(mysqlpump_lib ${MYSQLPUMP_LIB_SOURCES})
 TARGET_LINK_LIBRARIES(mysqlpump_lib
-   client_base ${LZ4_LIBRARY})
+   client_base ${LZ4_LIBRARY} ${CSSZLIB_LIBRARY})
 
 ADD_COMPILE_FLAGS(
   ${MYSQLPUMP_LIB_SOURCES}
@@ -175,7 +175,7 @@ ENDIF()
 ADD_COMPILE_FLAGS(
   compression_writer.cc
   mysqldump_tool_chain_maker.cc
-  COMPILE_FLAGS -I${LZ4_INCLUDE_DIR}
+  COMPILE_FLAGS -I${LZ4_INCLUDE_DIR} -I${CSSZLIB_DIR}
 )
 MYSQL_ADD_EXECUTABLE(mysqlpump  program.cc)
 ADD_COMPILE_FLAGS(

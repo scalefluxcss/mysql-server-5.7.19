@@ -19,6 +19,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/mysys_ssl
   ${ZLIB_INCLUDE_DIR}
   ${LZ4_INCLUDE_DIR}
+  ${CSSZLIB_DIR}
   ${SSL_INCLUDE_DIRS}
   ${CMAKE_SOURCE_DIR}/libmysql
   ${CMAKE_SOURCE_DIR}/libbinlogevents/include

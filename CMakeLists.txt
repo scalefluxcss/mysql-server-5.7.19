@@ -153,7 +153,6 @@ ENDIF()
 #cmake on 64bit windows/mac/solaris doesn't set CMAKE_SYSTEM_PROCESSOR correctly
 SET(MYSQL_MACHINE_TYPE ${CMAKE_SYSTEM_PROCESSOR})
 
-
 # Include the platform-specific file. To allow exceptions, this code
 # looks for files in order of how specific they are. If there is, for
 # example, a generic Linux.cmake and a version-specific
@@ -201,6 +200,7 @@ INCLUDE(character_sets)
 INCLUDE(cpu_info)
 INCLUDE(zlib)
 INCLUDE(lz4)
+INCLUDE(csszlib)
 INCLUDE(libevent)
 INCLUDE(ssl)
 INCLUDE(readline)
@@ -444,7 +444,6 @@ IF(NOT WITH_INNODB_MEMCACHED)
   ENDFOREACH()
 ENDIF()
 
-
 # Set commonly used variables
 IF(WIN32)
   SET(DEFAULT_MYSQL_HOME "C:/Program Files/MySQL/MySQL Server ${MYSQL_BASE_VERSION}" )
@@ -521,6 +520,8 @@ MYSQL_CHECK_EDITLINE()
 MYSQL_CHECK_LIBEVENT()
 # Add lz4 library
 MYSQL_CHECK_LZ4()
+# Add csszlib library
+FIND_CSSZLIB()
 # Add protoc and libprotobuf
 IF(NOT WITHOUT_SERVER)
   MYSQL_CHECK_PROTOBUF()
@@ -663,6 +664,7 @@ IF(NOT WITHOUT_SERVER)
    ADD_SUBDIRECTORY(libmysqld/examples)
   ENDIF(WITH_EMBEDDED_SERVER)
 ENDIF()
+
 
 # scripts/mysql_config depends on client and server targets loaded above.
 # It is referenced by some of the directories below, so we insert it here.

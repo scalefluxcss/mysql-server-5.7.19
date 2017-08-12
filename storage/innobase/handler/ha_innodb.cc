@@ -230,6 +230,7 @@ static ulong	innodb_default_row_format = DEFAULT_ROW_FORMAT_DYNAMIC;
 static const char* innodb_debug_compress_names[] = {
 	"none",
 	"zlib",
+	"csszlib",
 	"lz4",
 	"lz4hc",
 	NullS
@@ -2357,7 +2358,7 @@ Compression::is_none(const char* algorithm)
 	return(false);
 }
 
-/** Check for supported COMPRESS := (ZLIB | LZ4 | NONE) supported values
+/** Check for supported COMPRESS := (CSSZLIB | ZLIB | LZ4 | NONE) supported values
 @param[in]	name		Name of the compression algorithm
 @param[out]	compression	The compression algorithm
 @return DB_SUCCESS or DB_UNSUPPORTED */
@@ -2378,6 +2379,10 @@ Compression::check(
 
 		compression->m_type = LZ4;
 
+	} else if (innobase_strcasecmp(algorithm, "csszlib") == 0) {
+
+		compression->m_type = CSSZLIB;
+
 	} else {
 		return(DB_UNSUPPORTED);
 	}
@@ -2385,7 +2390,7 @@ Compression::check(
 	return(DB_SUCCESS);
 }
 
-/** Check for supported COMPRESS := (ZLIB | LZ4 | NONE) supported values
+/** Check for supported COMPRESS := (CSSZLIB | ZLIB | LZ4 | NONE) supported values
 @param[in]	name		Name of the compression algorithm
 @param[out]	compression	The compression algorithm
 @return DB_SUCCESS or DB_UNSUPPORTED */

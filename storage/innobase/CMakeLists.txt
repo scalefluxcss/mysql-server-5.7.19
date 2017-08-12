@@ -83,6 +83,7 @@ SET(INNOBASE_SOURCES
 	mtr/mtr0log.cc
 	mtr/mtr0mtr.cc
 	os/os0file.cc
+	${CMAKE_SOURCE_DIR}/extra/csszlib/csszlib_comp.c
 	os/os0proc.cc
 	os/os0event.cc
 	os/os0thread.cc
@@ -157,7 +158,7 @@ ENDIF()
 MYSQL_ADD_PLUGIN(innobase ${INNOBASE_SOURCES} STORAGE_ENGINE
   MANDATORY
   MODULE_OUTPUT_NAME ha_innodb
-  LINK_LIBRARIES ${ZLIB_LIBRARY} ${LZ4_LIBRARY} ${NUMA_LIBRARY})
+  LINK_LIBRARIES ${ZLIB_LIBRARY} ${LZ4_LIBRARY} ${CSSZLIB_LIBRARY} ${NUMA_LIBRARY})
 
 # Remove -DMYSQL_SERVER, it breaks embedded build
 SET_TARGET_PROPERTIES(innobase PROPERTIES COMPILE_DEFINITIONS "")

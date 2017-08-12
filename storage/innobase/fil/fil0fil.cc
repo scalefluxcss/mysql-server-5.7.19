@@ -7197,6 +7197,7 @@ fil_set_compression(
 		switch (srv_debug_compress) {
 		case Compression::LZ4:
 		case Compression::ZLIB:
+		case Compression::CSSZLIB:
 		case Compression::NONE:
 
 			compression.m_type =

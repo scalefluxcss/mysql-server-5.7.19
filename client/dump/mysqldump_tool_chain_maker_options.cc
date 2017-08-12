@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2015, 2017, Oracle and/or its affiliates. All rights reserved.
+  Copyright (c) 2015, Oracle and/or its affiliates. All rights reserved.
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -152,10 +152,6 @@ void Mysqldump_tool_chain_maker_options::process_positional_options(
       "mysql", "general_log"));
     m_object_filter.m_tables_excluded.push_back(std::make_pair(
       "mysql", "slow_log"));
-    m_object_filter.m_tables_excluded.push_back(std::make_pair(
-      "mysql", "slave_master_info"));
-    m_object_filter.m_tables_excluded.push_back(std::make_pair(
-      "mysql", "slave_relay_log_info"));
     /*
       We filter out all the tables which store account and privilge
       information. ex: mysql.user, mysql.db, mysql.tables_priv,
@@ -224,7 +220,7 @@ void Mysqldump_tool_chain_maker_options::create_options()
   this->create_new_option(&m_result_file, "result-file",
     "Direct all output generated for all objects to a given file.");
   this->create_new_option(&m_compress_output_algorithm, "compress-output",
-    "Compresses all output files with LZ4 or ZLIB compression algorithm.");
+    "Compresses all output files with LZ4 or ZLIB or CSSZLIB compression algorithm."); // CSSZLIB ++++++++
   this->create_new_option(&m_skip_rows_data, "skip-dump-rows",
     "Skip dumping rows of all tables to output.")
     ->set_short_character('d');
