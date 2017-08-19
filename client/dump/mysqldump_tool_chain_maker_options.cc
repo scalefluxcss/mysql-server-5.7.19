@@ -220,7 +220,7 @@ void Mysqldump_tool_chain_maker_options::create_options()
   this->create_new_option(&m_result_file, "result-file",
     "Direct all output generated for all objects to a given file.");
   this->create_new_option(&m_compress_output_algorithm, "compress-output",
-    "Compresses all output files with LZ4 or ZLIB or CSSZLIB compression algorithm."); // CSSZLIB ++++++++
+    "Compresses all output files with LZ4 or ZLIB or CSSZLIB compression algorithm."); // CSSZLIB
   this->create_new_option(&m_skip_rows_data, "skip-dump-rows",
     "Skip dumping rows of all tables to output.")
     ->set_short_character('d');

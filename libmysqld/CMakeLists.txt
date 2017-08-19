@@ -32,8 +32,10 @@ INCLUDE_DIRECTORIES(
   ${SSL_INTERNAL_INCLUDE_DIRS}
   ${CMAKE_SOURCE_DIR}/sql/backup
   ${LZ4_INCLUDE_DIR}
-  ${CSSZLIB_DIR}
 )
+IF(CSSZLIB_DIR)
+  INCLUDE_DIRECTORIES(${CSSZLIB_DIR})
+ENDIF(CSSZLIB_DIR)
 
 # We should generate these separately for libmysqld to avoid
 # compiling them for libmysqld while they are generated for sql.

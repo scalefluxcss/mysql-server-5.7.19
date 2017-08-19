@@ -17,12 +17,15 @@ INCLUDE_DIRECTORIES(
 ${CMAKE_SOURCE_DIR}/include 
 ${ZLIB_INCLUDE_DIR}
 ${LZ4_INCLUDE_DIR}
-${CSSZLIB_DIR}
 # Following is for perror, in case NDB is compiled in.
 ${CMAKE_SOURCE_DIR}/storage/ndb/include
 ${CMAKE_BINARY_DIR}/storage/ndb/include
 ${CMAKE_SOURCE_DIR}/storage/ndb/include/ndbapi
 ${CMAKE_SOURCE_DIR}/storage/ndb/include/mgmapi)
+
+IF(CSSZLIB_DIR)
+  INCLUDE_DIRECTORIES(${CSSZLIB_DIR})
+ENDIF(CSSZLIB_DIR)
 
 INCLUDE(${MYSQL_CMAKE_SCRIPT_DIR}/compile_flags.cmake)
 
@@ -110,7 +113,9 @@ IF(WITH_INNOBASE_STORAGE_ENGINE)
     INCLUDE_DIRECTORIES(${LZ4_INCLUDE_DIR})
   ENDIF()
 
-  INCLUDE_DIRECTORIES(${CSSZLIB_DIR})
+  IF(CSSZLIB_DIR)
+    INCLUDE_DIRECTORIES(${CSSZLIB_DIR})
+  ENDIF(CSSZLIB_DIR)
 
   # Add path to the InnoDB headers
   INCLUDE_DIRECTORIES(
@@ -119,6 +124,11 @@ IF(WITH_INNOBASE_STORAGE_ENGINE)
   )
   # We use the InnoDB code directly in case the code changes.
   ADD_DEFINITIONS("-DUNIV_INNOCHECKSUM")
+
+IF(CSSZLIB_INCLUDE_DIR)
+  SET(CSSZLIB_COMP_C csszlib/csszlib_comp.c)
+ENDIF()
+
   SET(INNOBASE_SOURCES
       ../storage/innobase/buf/buf0checksum.cc
       ../storage/innobase/ut/ut0crc32.cc
@@ -126,7 +136,7 @@ IF(WITH_INNOBASE_STORAGE_ENGINE)
       ../storage/innobase/buf/buf0buf.cc
       ../storage/innobase/page/page0zip.cc
       ../storage/innobase/os/os0file.cc
-      csszlib/csszlib_comp.c
+      ${CSSZLIB_COMP_C}
      )
 
   # Avoid generating Hardware Capabilities due to crc32 instructions
@@ -142,8 +152,11 @@ IF(WITH_INNOBASE_STORAGE_ENGINE)
     ENDIF()
   ENDIF()
 
+  IF(CSSZLIB_LIBRARY)
+    SET(VAR_CSSZLIB_LIB ${CSSZLIB_LIBRARY})
+  ENDIF()
   MYSQL_ADD_EXECUTABLE(innochecksum innochecksum.cc ${INNOBASE_SOURCES})
-  TARGET_LINK_LIBRARIES(innochecksum mysys mysys_ssl ${LZ4_LIBRARY} ${CSSZLIB_LIBRARY})
+  TARGET_LINK_LIBRARIES(innochecksum mysys mysys_ssl ${LZ4_LIBRARY} ${VAR_CSSZLIB_LIB})
   ADD_DEPENDENCIES(innochecksum GenError)
 ENDIF()
 

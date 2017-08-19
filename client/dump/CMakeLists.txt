@@ -140,8 +140,12 @@ SET(MYSQLPUMP_LIB_SOURCES
   view.cc
   ../../sql-common/my_user.c)
 ADD_CONVENIENCE_LIBRARY(mysqlpump_lib ${MYSQLPUMP_LIB_SOURCES})
+
+IF(CSSZLIB_LIBRARY)
+  SET(VAR_CSSZLIB_LIB ${CSSZLIB_LIBRARY})
+ENDIF()
 TARGET_LINK_LIBRARIES(mysqlpump_lib
-   client_base ${LZ4_LIBRARY} ${CSSZLIB_LIBRARY})
+   client_base ${LZ4_LIBRARY} ${VAR_CSSZLIB_LIB})
 
 ADD_COMPILE_FLAGS(
   ${MYSQLPUMP_LIB_SOURCES}
@@ -172,11 +176,20 @@ IF(HAVE_UNUSED_TYPEDEFS)
     COMPILE_FLAGS "-Wno-unused-local-typedefs")
 ENDIF()
 
+IF(CSSZLIB_DIR)
 ADD_COMPILE_FLAGS(
   compression_writer.cc
   mysqldump_tool_chain_maker.cc
   COMPILE_FLAGS -I${LZ4_INCLUDE_DIR} -I${CSSZLIB_DIR}
 )
+ELSE(CSSZLIB_DIR)
+ADD_COMPILE_FLAGS(
+  compression_writer.cc
+  mysqldump_tool_chain_maker.cc
+  COMPILE_FLAGS -I${LZ4_INCLUDE_DIR}
+)
+ENDIF()
+
 MYSQL_ADD_EXECUTABLE(mysqlpump  program.cc)
 ADD_COMPILE_FLAGS(
   program.cc COMPILE_FLAGS -I${BOOST_PATCHES_DIR} -I${BOOST_INCLUDE_DIR}

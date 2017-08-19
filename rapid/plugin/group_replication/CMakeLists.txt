@@ -35,7 +35,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/libbinlogevents/include/   # byteorder.h
   ${SSL_INCLUDE_DIRS}                            # SSL include dirs
   ${LZ4_INCLUDE_DIR}                             # LZ4
-  ${CSSZLIB_DIR}                                 # CSSZLIB
   ${XCOM_WINDEPS_INCLUDE_DIRS}                   # win deps and sun rpc
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${CMAKE_CURRENT_SOURCE_DIR}/include/sql_service
@@ -45,6 +44,10 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/libmysqlgcs/src/bindings/xcom/xcom
   ${CMAKE_CURRENT_BINARY_DIR}/include
   ${CMAKE_CURRENT_BINARY_DIR}/xdr_gen)
+
+IF(CSSZLIB_DIR)
+  INCLUDE_DIRECTORIES(${CSSZLIB_DIR})                                 # CSSZLIB
+ENDIF(CSSZLIB_DIR)
 
 ### SOURCES ###
 
@@ -212,14 +215,19 @@ ELSEIF(CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR
 ENDIF()
 
 # declare the plugin itself
+
+IF(CSSZLIB_LIBRARY)
+  SET(VAR_CSSZLIB_LIB ${CSSZLIB_LIBRARY})
+ENDIF(CSSZLIB_LIBRARY)
+
 MYSQL_ADD_PLUGIN(group_replication
                  ${XCOM_SOURCES}
                  ${GCS_SOURCES}
                  ${GROUP_REPLICATION_SOURCES}
                  LINK_LIBRARIES
                  ${LZ4_LIBRARY}
-                 ${CSSZLIB_LIBRARY}
                  ${SSL_LIBRARIES}
+                 ${VAR_CSSZLIB_LIB}
                  MODULE_ONLY MODULE_OUTPUT_NAME "group_replication")
 
 ### INSTALLATION ###

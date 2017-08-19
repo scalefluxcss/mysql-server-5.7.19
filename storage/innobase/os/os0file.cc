@@ -72,7 +72,10 @@ Created 10/21/1995 Heikki Tuuri
 
 #include <lz4.h>
 #include <zlib.h>
+
+#ifdef HAVE_CSSZLIB
 #include "csszlib_comp.h"
+#endif
 
 #ifdef UNIV_DEBUG
 /** Set when InnoDB has invoked exit(). */
@@ -1381,7 +1384,7 @@ os_file_compress_page(
 
 		break;
 	}
-
+#ifdef HAVE_CSSZLIB
 	case Compression::CSSZLIB: {
 
 		uLongf	zlen = static_cast<uLongf>(out_len);
@@ -1402,6 +1405,7 @@ os_file_compress_page(
 
 		break;
 	}
+#endif
 
 	case Compression::LZ4:
 
@@ -8461,7 +8465,10 @@ os_file_set_umask(ulint umask)
 
 #include <lz4.h>
 #include <zlib.h>
+
+#ifdef HAVE_CSSZLIB
 #include "csszlib_comp.h"
+#endif
 
 #include <my_aes.h>
 #include <my_rnd.h>
@@ -8679,7 +8686,7 @@ Compression::deserialize(
 		}
 
 		break;
-
+#ifdef HAVE_CSSZLIB
 	case CSSZLIB: {
 
 		uLongf	zlen = header.m_original_size;
@@ -8698,6 +8705,7 @@ Compression::deserialize(
 
 		break;
 	}
+#endif
 
 	default:
 #if !defined(UNIV_INNOCHECKSUM)
