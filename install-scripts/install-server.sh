@@ -36,7 +36,7 @@ echo "/usr/local/mysql/lib" > /etc/ld.so.conf.d/mysql.conf
 fi
 
 if ! ldconfig -p | grep -q /usr/local/mysql/lib; then
-ldconfig >/dev/null
+ldconfig 2>/dev/null
 fi
 
 fs_type=`blkid -o value -s TYPE /dev/sfd0 2>/dev/null`

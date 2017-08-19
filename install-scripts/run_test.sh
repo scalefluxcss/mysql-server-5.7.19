@@ -24,20 +24,13 @@ Options:\n
 \t--host       - host name or ip of MySQL Server, default to localhost.\n
 \t--port       - port number of MySQL Server, default to 3306.\n
 \t--rootpwd    - MySQL Server root password, default to empty string.\n
-\t--socket     - path to MySQL socket, default to /tmp/mysql.sock.\n
 \t--tables     - number of tables to be created in Sysbench tests, default to 4.\n
 \t--table-size - size of each table in MB, default to 1024 MB.\n
 \t--threads    - number of threads to be used in Sysbench tests, default to 16.\n
 \t--time       - time in seconds that each Sysbench test wil run, default to 60 seconds.
 "
-# if test $# -eq 0; then
-#     echo -e $usage
-#     exit 0
-# fi
-
 HOSTNAME=localhost
 PORT=3306
-SOCKET=/tmp/mysql.sock
 NUM_TABLES=4
 TABLE_SIZE=1024
 NUM_THREADS=16
@@ -50,7 +43,6 @@ do
         --host) shift; HOSTNAME=$1 ;;
         --port) shift; PORT=$1 ;;
         --rootpwd) shift; ROOTPWD=$1 ;;
-        --socket) shift; SOCKET=$1 ;;
         --tables) shift; NUM_TABLES=$1 ;;
         --table-size) shift; TABLE_SIZE=$1 ;;
         --threads) shift; NUM_THREADS=$1 ;;
@@ -61,7 +53,6 @@ done
 
 echo -e "Hostname: ${HOSTNAME}
 Port: ${PORT}
-Socket: ${SOCKET}
 Number of tables: ${NUM_TABLES}
 Each table size: ${TABLE_SIZE} MB
 Number of threads: ${NUM_THREADS}
@@ -75,7 +66,7 @@ run_test()
 testname=$1
 mode=$2
 
-/usr/local/bin/sysbench --mysql-socket=$SOCKET --db-driver=mysql --mysql-host=$HOSTNAME --mysql-port=$PORT \
+/usr/local/bin/sysbench --db-driver=mysql --mysql-host=$HOSTNAME --mysql-port=$PORT \
   --mysql-user=sbtest --mysql-password=sbtest $testname --tables=$NUM_TABLES --threads=$NUM_THREADS \
   --table-size=$((TABLE_SIZE*1024*1024/200)) --time=$TIME $mode
 }
@@ -90,7 +81,7 @@ if [ ! -d $install_dir ]; then
     (cd $sb_dir && ./autogen.sh && ./configure --with-mysql-includes=${mysql_dir}/include  --with-mysql-libs=${mysql_dir}/lib && make && make install)
 fi
 
-mysql -h${HOSTNAME} -S${SOCKET} -P${PORT} -uroot -e "create database if not exists sbtest; grant all on sbtest.* to sbtest@'localhost' identified by 'sbtest'; flush privileges;"
+mysql -h${HOSTNAME} -P${PORT} -uroot -e "create database if not exists sbtest; grant all on sbtest.* to sbtest@'localhost' identified by 'sbtest'; flush privileges;"
 
 for comp in $COMPRESSORS; do
     if [ $comp = 'csszlib' ]; then
@@ -119,7 +110,7 @@ for comp in $COMPRESSORS; do
         run_test $testname prepare > /dev/null
         output=`echo -e "$(run_test $testname run)" | grep transactions`
         [[ $output =~ [[:digit:]]+\.[[:digit:]]+ ]] && echo "Transactions: ${BASH_REMATCH} per sec"
-        mysql --host=$HOSTNAME --socket=$SOCKET --user=root --password=${ROOTPWD} -e "select 'Database Size:' as 'db', \
+        mysql --host=$HOSTNAME --user=root --password=${ROOTPWD} -e "select 'Database Size:' as 'db', \
         concat(round(IFNULL(sum(ALLOCATED_SIZE)/1024/1024, 0), 2), ' MB') as length from information_schema.innodb_sys_tablespaces \
         where name like '%sbtest%';" 2>/dev/null | grep "Database Size"
         run_test $testname cleanup > /dev/null
