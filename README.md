@@ -37,9 +37,9 @@ fi
 ```
 $ sudo source /etc/profile.d/mysql.sh
 ```
-* Start mysql server as a service
+* Start Mysql Server as a service
 ```bash
-$ sudo cp -v ${install_dir}/support-files/mysql.server /etc/rc.d/init.d/mysql
+$ sudo cp -v /usr/local/mysql/support-files/mysql.server /etc/rc.d/init.d/mysql
 ```
 * Add MySQL Server libraries to the shared library cache
 ```bash
@@ -83,6 +83,7 @@ $ mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '';" # Set empty root pa
 ```
 
 # Install Client
+Skip this step if MySQL Client runs on the same machine with MySQL Server.
 ### Prerequisites
 - cmake
 - ncurse
@@ -123,8 +124,8 @@ $ sudo ldconfig
 ```
 
 ## Post install configuration
-* If MySQL client and server are in the same machine, please ignore this part.
-* If MySQL client connects to server remotely, the following configurations are needed on MySQL Server
+* If MySQL Client and Server are in the same machine, please ignore this part.
+* If MySQL Client connects to Server remotely, the following configurations are needed on MySQL Server
 Open TCP port 3306 using iptables
 ```bash
 $ yum install iptables-services
