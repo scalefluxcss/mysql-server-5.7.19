@@ -5,7 +5,7 @@ src_dir=`pwd`/..
 sb_zip=${src_dir}/sysbench.zip
 sb_dir=${src_dir}/sysbench-1.0.6
 install_dir=/usr/local/share/sysbench
-mysql_dir=/usr/lib/mysql
+mysql_dir=/usr/local/mysql
 
 usage="Usage: ./run_test.sh [options]\n
 Run Sysbench benchmark tests to demonstrate CSSZLIB advantage in MySQL transparent page compression.\n

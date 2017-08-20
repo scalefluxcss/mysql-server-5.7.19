@@ -39,7 +39,7 @@ if ! ldconfig -p | grep -q /usr/local/mysql/lib; then
 ldconfig 2>/dev/null
 fi
 
-fs_type=`blkid -o value -s TYPE /dev/sfd0 2>/dev/null`
+fs_type=`blkid -o value -s TYPE /dev/sfd0 2>/dev/null` || fs_type=
 if [ -z $fs_type ]; then
 mkfs.ext4 /dev/sfd0
 fi
@@ -53,6 +53,11 @@ cp $cur_dir/my.cnf /etc
 
 if [ ! -z "$(ls -A $data_dir 2>/dev/null)" ]; then
 rm -rf $data_dir 
+fi
+
+id -u mysql >/dev/null && rc=$? || rc=$?
+if [ $rc -eq 1 ]; then
+useradd mysql
 fi
 
 mysqld --initialize-insecure --user=mysql
