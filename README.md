@@ -4,14 +4,14 @@ CSS MySQL Server has enabled CSSZLIB as the third compression option in Transpar
 ## Install Server
 ### Prerequisites
 - cmake
-- ncurse
+- ncurse-devel
 - perl
 - ScaleFlux driver and block device
 
 ### Install
 #### Install via script
 ```bash
-$ cd install
+$ cd install-scripts
 $ ./install-server.sh
 ```
 #### Install step by step
@@ -86,13 +86,13 @@ $ mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '';" # Set empty root pa
 Skip this step if MySQL Client runs on the same machine with MySQL Server.
 ### Prerequisites
 - cmake
-- ncurse
+- ncurse-devel
 - perl
 
 ### Install
 #### Install via script
 ```bash
-$ cd install
+$ cd install-scripts
 $ ./install-client.sh
 ```
 #### Install step by step
