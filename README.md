@@ -4,6 +4,7 @@ CSS MySQL Server has enabled CSSZLIB as the third compression option in Transpar
 ## Install Server
 ### Prerequisites
 - cmake
+- libaio-devel
 - ncurse-devel
 - perl
 - ScaleFlux driver and block device
