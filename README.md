@@ -27,7 +27,7 @@ $ cd build && cmake .. -DDOWNLOAD_BOOST=1 -DWITH_BOOST=../boost -DENABLE_DOWNLOA
 $ make
 $ sudo make install
 ```
-* Add CSS MySQL utilities to PATH
+* Add CSS MySQL utilities to PATH  
 Create a shell script mysql.sh and copy to /etc/profile.d so it will be loaded automatically
 ```bash
 if ! echo $PATH | grep -q /usr/local/mysql/bin; then
@@ -97,15 +97,15 @@ $ cd install-scripts
 $ ./install-client.sh
 ```
 #### Install step by step
-* compile CSS MySQL
+* Compile CSS MySQL
 ```bash
 $ mkdir -p build
 $ cd build && cmake .. -DDOWNLOAD_BOOST=1 -DWITH_BOOST=../boost -DENABLE_DOWNLOADS=1
 $ make
 $ sudo make install
 ```
-* Add CSS MySQL utilities to PATH
-create a shell script mysql.sh and copy to /etc/profile.d so it will be loaded automatically
+* Add CSS MySQL utilities to PATH  
+Create a shell script mysql.sh and copy to /etc/profile.d so it will be loaded automatically
 ```bash
 if ! echo $PATH | grep -q /usr/local/mysql/bin; then
 PATH=/usr/local/mysql/bin:$PATH
@@ -115,7 +115,7 @@ fi
 ```
 $ sudo source /etc/profile.d/mysql.sh
 ```
-* add MySQL Server libraries to the shared library cache
+* Add MySQL Server libraries to the shared library cache
 ```bash
 $ sudo echo "/usr/local/mysql/lib" > /etc/ld.so.conf.d/mysql.conf
 ```
