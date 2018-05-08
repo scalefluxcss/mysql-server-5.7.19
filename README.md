@@ -67,8 +67,8 @@ $ sudo ldconfig
 * Set data directory to CSS device
 Make filesystem and mount CSS device
 ```bash
-$ sudo mkfs.ext4 /dev/sfd0
-$ sudo mount /dev/sfd0 path_to_mount_point
+$ sudo mkfs.ext4 /dev/sfd0n1
+$ sudo mount /dev/sfd0n1 path_to_mount_point
 ```
 Copy install-scripts/my.cnf to /etc or customize /etc/my.cnf for your own needs.
 ```bash
