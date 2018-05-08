@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-set -x
+# set -x
 
 PERF_TEST=
 src_dir=`pwd`/..
@@ -119,13 +119,13 @@ for comp in $COMPRESSORS; do
         fi
         service mysql restart
 
-        run_test $testname cleanup
-        run_test $testname prepare
+        run_test $testname cleanup > /dev/null
+        run_test $testname prepare > /dev/null
         output=`echo -e "$(run_test $testname run)" | grep transactions`
         [[ $output =~ [[:digit:]]+\.[[:digit:]]+ ]] && echo "Transactions: ${BASH_REMATCH} per sec"
         mysql --host=$HOSTNAME --user=root --password=${ROOTPWD} -e "select 'Database Size:' as 'db', \
         concat(round(IFNULL(sum(ALLOCATED_SIZE)/1024/1024, 0), 2), ' MB') as length from information_schema.innodb_sys_tablespaces \
-        where name like '%sbtest%';" | grep "Database Size"
-        run_test $testname cleanup
+        where name like '%sbtest%';" 2>/dev/null | grep "Database Size"
+        run_test $testname cleanup > /dev/null
     done
 done
