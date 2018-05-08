@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
+set -x
 
+PERF_TEST=
 src_dir=`pwd`/..
 sb_zip=${src_dir}/sysbench.zip
 sb_dir=${src_dir}/sysbench-1.0.6
@@ -20,14 +22,15 @@ The following tests will be executed in order.\n
 \t8.    Sysbench OLTP Read-Only test with Standard ZLIB enabled\n
 \t9.    Sysbench OLTP Read-Write test with Standard ZLIB enabled\n
 Options:\n
-\t--help     - Display how to use this script\n
-\t--host       - host name or ip of MySQL Server, default to localhost.\n
-\t--port       - port number of MySQL Server, default to 3306.\n
-\t--rootpwd    - MySQL Server root password, default to empty string.\n
-\t--tables     - number of tables to be created in Sysbench tests, default to 4.\n
-\t--table-size - size of each table in MB, default to 1024 MB.\n
-\t--threads    - number of threads to be used in Sysbench tests, default to 16.\n
-\t--time       - time in seconds that each Sysbench test wil run, default to 60 seconds.
+\t--help        - Display how to use this script\n
+\t--host        - host name or ip of MySQL Server, default to localhost.\n
+\t--port        - port number of MySQL Server, default to 3306.\n
+\t--rootpwd     - MySQL Server root password, default to empty string.\n
+\t--tables      - number of tables to be created in Sysbench tests, default to 4.\n
+\t--table-size  - size of each table in MB, default to 1024 MB.\n
+\t--threads     - number of threads to be used in Sysbench tests, default to 16.\n
+\t--time        - time in seconds that each Sysbench test wil run, default to 60 seconds.\n
+\t--performance - use the configurations in my.cnf.performance if given.\n
 "
 HOSTNAME=localhost
 PORT=3306
@@ -47,6 +50,7 @@ do
         --table-size) shift; TABLE_SIZE=$1 ;;
         --threads) shift; NUM_THREADS=$1 ;;
         --time) shift; TIME=$1 ;;
+        --performance) PERF_TEST=$1 ;;
     esac
     shift
 done
@@ -81,6 +85,7 @@ if [ ! -d $install_dir ]; then
     (cd $sb_dir && ./autogen.sh && ./configure --with-mysql-includes=${mysql_dir}/include  --with-mysql-libs=${mysql_dir}/lib && make && make install)
 fi
 
+service mysql restart
 mysql -h${HOSTNAME} -P${PORT} -uroot -e "create database if not exists sbtest; grant all on sbtest.* to sbtest@'localhost' identified by 'sbtest'; flush privileges;"
 
 for comp in $COMPRESSORS; do
@@ -107,12 +112,20 @@ for comp in $COMPRESSORS; do
             testname=${install_dir}/oltp_read_write.lua
         fi
 
-        run_test $testname prepare > /dev/null
+        if test -z $PERF_TEST; then
+            cp my.cnf.sanitycheck /etc/my.cnf
+        else
+            cp my.cnf.performance /etc/my.cnf
+        fi
+        service mysql restart
+
+        run_test $testname cleanup
+        run_test $testname prepare
         output=`echo -e "$(run_test $testname run)" | grep transactions`
         [[ $output =~ [[:digit:]]+\.[[:digit:]]+ ]] && echo "Transactions: ${BASH_REMATCH} per sec"
         mysql --host=$HOSTNAME --user=root --password=${ROOTPWD} -e "select 'Database Size:' as 'db', \
         concat(round(IFNULL(sum(ALLOCATED_SIZE)/1024/1024, 0), 2), ' MB') as length from information_schema.innodb_sys_tablespaces \
-        where name like '%sbtest%';" 2>/dev/null | grep "Database Size"
-        run_test $testname cleanup > /dev/null
+        where name like '%sbtest%';" | grep "Database Size"
+        run_test $testname cleanup
     done
 done

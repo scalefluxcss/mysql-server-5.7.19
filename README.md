@@ -3,11 +3,25 @@
 CSS MySQL Server has enabled CSSZLIB as the third compression option in Transparent Page Compression. 
 ## Install Server
 ### Prerequisites
+Prerequisites must be installed before installing MySQL server. Otherwise, Transparent Page Compression might not work.
+
+* Install the following packages before installing MySQL server.
 - cmake
 - libaio-devel
 - ncurse-devel
 - perl
-- ScaleFlux driver and block device
+```bash
+# Ubuntu
+sudo apt-get install software-properties-common
+sudo add-apt-repository ppa:george-edison55/cmake-3.x
+sudo apt-get update
+sudo apt-get install -y cmake libaio-dev libncurses5-dev libncursesw5-dev perl
+
+# CentOS
+sudo yum install -y libaio-devel ncurses-devel cmake perl
+```
+
+* Install ScaleFlux driver and block device
 
 ### Install
 #### Install via script
@@ -166,7 +180,7 @@ Time: 60 seconds
 CSSZLIB:
 Write-Only Test:
 Transactions: 12940.55 per sec
-Database Size:   172.07 MB
+Database Size:   5172.07 MB
 Read-Only Test:
 Transactions: 4838.89 per sec
 Database Size:   3536.45 MB

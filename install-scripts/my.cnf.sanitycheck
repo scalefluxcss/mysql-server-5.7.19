@@ -20,6 +20,7 @@
 # server_id = .....
 # socket = .....
 datadir = /mnt/sfx-card-root/mysql_data
+tmpdir = /mnt/sfx-card-root/mysql_data
 log_error = mysql_error.log
 innodb_page_size = 32k
 innodb_buffer_pool_size = 16G # default: 128M
@@ -27,5 +28,7 @@ innodb_buffer_pool_instances = 8 # default: 1 if pool_size < 1G; otherwise: 8
 innodb_page_cleaners = 32 # default:4
 innodb_log_file_size = 2G # default: 48M
 innodb_log_buffer_size = 128M # default: 1M
+innodb_buffer_pool_load_at_startup = OFF
+innodb_buffer_pool_dump_at_shutdown = OFF
 
 sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES 
