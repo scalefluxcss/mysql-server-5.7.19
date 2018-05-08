@@ -3,7 +3,7 @@ set -e
 cur_dir=`pwd`
 src_dir=`pwd`/..
 num_cpu=`grep -c ^processor /proc/cpuinfo`
-dev_name=/dev/sfd0n1
+dev_name=/dev/sfd0
 install_dir=/usr/local/mysql
 css_mnt_point=/mnt/sfx-card-root
 data_dir=${css_mnt_point}/mysql_data
